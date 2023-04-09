@@ -4,6 +4,10 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
+export const config = {
+  runtime: "edge",
+};
+
 
 export default async function handler(req, res) {
     const prompt = req.body.prompt;
@@ -16,12 +20,13 @@ export default async function handler(req, res) {
         const aiResult = await openai.createChatCompletion({
           model: "gpt-3.5-turbo",
           messages: [
-            {role: "user", content: prompt}
+            {role: "user", content: prompt, stream: true,}
         ]
         });
+
+        const stream = await OpenAIStream(payload);
+        return new Response(stream);
       
-        const text = aiResult.data.choices[0].message
-        res.status(200).json({ text: text });
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Internal server error" });

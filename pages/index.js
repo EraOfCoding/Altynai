@@ -21,6 +21,7 @@ export default function Home() {
         prompt: text,
       }),
     }).then((response) => response.json());
+    consolelog(text)
     setLoading(false);
     
     const responseBody = await response.text.content;
